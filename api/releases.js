@@ -1,10 +1,15 @@
 const REPOSITORY = 'ashmeet-op/Hyper_Launcher_Windows';
+const { isAuthorized } = require('../lib/release-auth');
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error: 'Method not allowed.' });
   }
+  res.setHeader('Cache-Control', 'private, no-store');
+  res.setHeader('Vary', 'Cookie');
+  if (!isAuthorized(req)) return res.status(401).json({ error: 'Sign in to view private releases.' });
+  if (!process.env.GITHUB_TOKEN) return res.status(503).json({ error: 'Private release access is not configured.' });
 
   const headers = {
     Accept: 'application/vnd.github+json',
@@ -16,19 +21,16 @@ module.exports = async (req, res) => {
   try {
     const repository = await fetch(`https://api.github.com/repos/${REPOSITORY}`, { headers });
     if (!repository.ok) {
-      res.setHeader('Cache-Control', 'no-store');
       return res.status(502).json({ error: 'GitHub could not provide releases right now.' });
     }
     const repositoryInfo = await repository.json();
     if (repositoryInfo.private === true) {
-      res.setHeader('Cache-Control', 'no-store');
       return res.status(403).json({ error: 'Release information is unavailable.' });
     }
 
     const response = await fetch(`https://api.github.com/repos/${REPOSITORY}/releases?per_page=100`, { headers });
     if (!response.ok) {
       const rateLimited = response.status === 403 || response.status === 429;
-      res.setHeader('Cache-Control', 'no-store');
       return res.status(rateLimited ? 503 : 502).json({
         error: rateLimited ? 'GitHub is temporarily limiting release requests. Please try again shortly.' : 'GitHub could not provide releases right now.'
       });
@@ -49,10 +51,8 @@ module.exports = async (req, res) => {
         browser_download_url: asset.browser_download_url
       })) : []
     }));
-    res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=60');
     return res.status(200).json(publicReleases);
   } catch (_) {
-    res.setHeader('Cache-Control', 'no-store');
     return res.status(502).json({ error: 'Unable to load releases. Check your connection and try again.' });
   }
 };
