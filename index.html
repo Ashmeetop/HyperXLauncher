@@ -341,10 +341,21 @@
     .build-date { font-size: 11px; color: var(--muted2); }
     .release-card { padding:14px 16px; border-bottom:1px solid var(--border); }
     .release-card:last-child { border-bottom:none; }
+    .release-card .release-title { overflow-wrap:anywhere; }
     .release-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
     .release-title { color:var(--text); font-size:14px; font-weight:700; }
-    .release-assets { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
-    .release-assets a { color:var(--text); font-size:12px; text-decoration:none; overflow-wrap:anywhere; }
+    .release-assets { display:flex; align-items:stretch; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .release-assets a { font-size:12px; text-decoration:none; overflow-wrap:anywhere; }
+    #windowsDownloads { align-items:center; }
+    .windows-download { min-width:220px; max-width:100%; flex-direction:column; gap:4px; white-space:normal; overflow-wrap:anywhere; }
+    .windows-download-name { font-size:11px; font-weight:500; opacity:.7; }
+    .windows-download[aria-disabled="true"] { opacity:.55; pointer-events:none; }
+    @media (max-width:560px) {
+      .release-heading { flex-direction:column; gap:5px; }
+      .release-card { padding:12px; }
+      #windowsDownloads .windows-download { width:100%; }
+      .release-assets .windows-download { flex:1 1 100%; }
+    }
     .release-status { color:var(--muted2); font-size:13px; padding:16px; text-align:center; }
     .release-status button { margin-left:8px; color:var(--text); background:transparent; border:0; text-decoration:underline; cursor:pointer; font:inherit; }
     .release-more { color:var(--muted2); font-size:12px; margin-top:10px; cursor:pointer; }
@@ -429,9 +440,9 @@
     <h1>Hyper Launcher</h1>
     <p class="hero-sub">Minimal, fast Minecraft launcher<br>for Vanilla &amp; Fabric.</p>
     <div class="hero-btns">
-      <a id="heroDlBtn" href="https://github.com/ashmeet-op/Hyper_Launcher_v3/releases" class="btn btn-w" target="_blank" rel="noopener noreferrer">
+      <a id="heroDlBtn" href="#windows" class="btn btn-w" aria-label="Download latest Windows release">
         <span class="ms">download</span>
-        <span id="heroDlLabel">Android Releases</span>
+        <span id="heroDlLabel">Download for Windows</span>
       </a>
       <a href="https://play.google.com/store/apps/details?id=net.ashmeet.hyperlauncher&hl=en_IN"
          class="btn btn-g" target="_blank">
@@ -568,11 +579,11 @@
   }
   function makeDownloadButton(parent, asset, primary=false) {
     const link=document.createElement('a');
-    link.href=safeDownloadUrl(asset); link.className=primary?'btn btn-w':'btn btn-g';
-    link.textContent=primary?'Download for Windows':`Download ${asset.name}`;
-    link.setAttribute('aria-label',`${link.textContent}: ${asset.name}${formatFileSize(asset.size)?`, ${formatFileSize(asset.size)}`:''}`);
+    link.href=safeDownloadUrl(asset); link.className=`windows-download ${primary?'btn btn-w':'btn btn-g'}`;
+    appendText(link,'span','',primary?'Download for Windows':`Download ${asset.name}`);
+    appendText(link,'span','windows-download-name',`${asset.name}${formatFileSize(asset.size)?` · ${formatFileSize(asset.size)}`:''}`);
+    link.setAttribute('aria-label',`${primary?'Download for Windows':'Download'} ${asset.name}${formatFileSize(asset.size)?`, ${formatFileSize(asset.size)}`:''}`);
     parent.appendChild(link);
-    if(primary) appendText(parent,'span','build-date',`${asset.name}${formatFileSize(asset.size)?` · ${formatFileSize(asset.size)}`:''}`);
   }
   function renderRelease(release, parent) {
     const card=document.createElement('article'); card.className='release-card';
@@ -590,12 +601,15 @@
     parent.appendChild(card);
   }
   function showWindowsError(message) {
+    windowsStatus.hidden=false;
     windowsStatus.replaceChildren(); windowsStatus.textContent=message;
     const retry=document.createElement('button'); retry.type='button'; retry.textContent='Retry';
     retry.addEventListener('click',fetchWindowsReleases); windowsStatus.appendChild(retry);
   }
   async function fetchWindowsReleases() {
-    windowsStatus.textContent='Fetching releases...'; windowsDownloads.replaceChildren();
+    windowsStatus.hidden=false; windowsStatus.textContent='Fetching releases...'; windowsDownloads.replaceChildren();
+    const heroButton=document.getElementById('heroDlBtn');
+    heroButton.href='#windows'; heroButton.removeAttribute('aria-disabled');
     try {
       const response=await fetch('/api/releases',{cache:'no-store'});
       if(!response.ok){const error=await response.json().catch(()=>({}));throw new Error(error.error||'Could not load Windows releases.');}
@@ -609,13 +623,25 @@
         const exe=assets.find(asset=>/\.exe$/i.test(asset.name));
         const primary=exe||assets[0];
         windowsVersion.textContent=`${stable.tag_name} · Latest stable release`;
-        if(primary){makeDownloadButton(windowsDownloads,primary,true);assets.filter(asset=>asset!==primary).forEach(asset=>makeDownloadButton(windowsDownloads,asset));}
-        else {windowsVersion.textContent=`${stable.tag_name} · No Windows installer is attached.`;}
-      } else windowsVersion.textContent='No stable Windows release is available yet.';
+        if(primary){
+          makeDownloadButton(windowsDownloads,primary,true);
+          assets.filter(asset=>asset!==primary).forEach(asset=>makeDownloadButton(windowsDownloads,asset));
+          heroButton.href=safeDownloadUrl(primary); heroButton.setAttribute('aria-label',`Download Windows ${stable.tag_name}: ${primary.name}`);
+        } else {
+          windowsVersion.textContent=`${stable.tag_name} · No Windows installer is attached.`;
+          heroButton.setAttribute('aria-disabled','true');
+        }
+      } else {
+        windowsVersion.textContent='No stable Windows release is available yet.';
+        heroButton.setAttribute('aria-disabled','true');
+      }
       if(!history.length)appendText(windowsHistoryList,'div','release-status','No releases are available yet.');
       else history.forEach(release=>renderRelease(release,windowsHistoryList));
-      windowsStatus.textContent='';
-    } catch(error) { showWindowsError(error.message||'Unable to load Windows releases.'); }
+      windowsStatus.hidden=true;
+    } catch(error) {
+      heroButton.setAttribute('aria-disabled','true');
+      showWindowsError(error.message||'Unable to load Windows releases.');
+    }
   }
   fetchWindowsReleases();
 
