@@ -581,7 +581,7 @@
     const link=document.createElement('a');
     link.href=safeDownloadUrl(asset); link.className=`windows-download ${primary?'btn btn-w':'btn btn-g'}`;
     appendText(link,'span','',primary?'Download for Windows':`Download ${asset.name}`);
-    appendText(link,'span','windows-download-name',`${asset.name}${formatFileSize(asset.size)?` · ${formatFileSize(asset.size)}`:''}`);
+    if(!primary) appendText(link,'span','windows-download-name',`${asset.name}${formatFileSize(asset.size)?` · ${formatFileSize(asset.size)}`:''}`);
     link.setAttribute('aria-label',`${primary?'Download for Windows':'Download'} ${asset.name}${formatFileSize(asset.size)?`, ${formatFileSize(asset.size)}`:''}`);
     parent.appendChild(link);
   }
