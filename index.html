@@ -342,7 +342,6 @@
     .release-card { padding:14px 16px; border-bottom:1px solid var(--border); }
     .release-card:last-child { border-bottom:none; }
     .release-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
-    .release-heading a { overflow-wrap:anywhere; }
     .release-title { color:var(--text); font-size:14px; font-weight:700; }
     .release-assets { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
     .release-assets a { color:var(--text); font-size:12px; text-decoration:none; overflow-wrap:anywhere; }
@@ -350,13 +349,6 @@
     .release-status button { margin-left:8px; color:var(--text); background:transparent; border:0; text-decoration:underline; cursor:pointer; font:inherit; }
     .release-more { color:var(--muted2); font-size:12px; margin-top:10px; cursor:pointer; }
     .release-notes { color:var(--muted2); font-size:12px; line-height:1.55; white-space:pre-wrap; overflow-wrap:anywhere; margin-top:10px; }
-    #releaseLoginDialog { width:min(420px,calc(100% - 32px)); margin:auto; padding:24px; color:var(--text); background:#111; border:1px solid var(--border-h); border-radius:18px; }
-    #releaseLoginDialog::backdrop { background:rgba(0,0,0,.78); backdrop-filter:blur(4px); }
-    #releaseLoginDialog h3 { margin-bottom:8px; }
-    #releaseLoginDialog p { color:var(--muted2); font-size:13px; line-height:1.5; }
-    #releaseLoginForm { display:grid; gap:12px; margin-top:18px; }
-    #releaseLoginForm input { width:100%; padding:12px; color:var(--text); background:#080808; border:1px solid var(--border-h); border-radius:10px; font:inherit; }
-    #releaseLoginError { min-height:18px; color:#fca5a5 !important; }
 
     /* White download button inside old builds */
     .btn-build-dl {
@@ -412,11 +404,12 @@
     <nav id="mainNav">
       <a href="#features" data-target="features">Features</a>
       <a href="#preview" data-target="preview">Preview</a>
-      <a href="#download" data-target="download">Download</a>
+      <a href="#download" data-target="download">Android</a>
+      <a href="#windows" data-target="windows">Windows</a>
       <span class="nav-indicator" id="navIndicator"></span>
     </nav>
     <div class="hdr-r">
-      <a href="https://github.com/ashmeet-op/Hyper_Launcher_Windows" class="ibtn" target="_blank" title="GitHub">
+      <a href="https://github.com/ashmeet-op/Hyper_Launcher_v3" class="ibtn" target="_blank" rel="noopener noreferrer" title="GitHub">
         <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.235-3.22-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.3 1.23a11.5 11.5 0 0 1 3-.405c1.02.005 2.045.138 3 .405 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
       </a>
       <a href="https://discord.gg/GxTY8Ckxry" class="ibtn" target="_blank" title="Discord">
@@ -436,9 +429,9 @@
     <h1>Hyper Launcher</h1>
     <p class="hero-sub">Minimal, fast Minecraft launcher<br>for Vanilla &amp; Fabric.</p>
     <div class="hero-btns">
-      <a id="heroDlBtn" href="https://github.com/ashmeet-op/Hyper_Launcher_Windows/releases" class="btn btn-w" target="_blank" rel="noopener noreferrer">
+      <a id="heroDlBtn" href="https://github.com/ashmeet-op/Hyper_Launcher_v3/releases" class="btn btn-w" target="_blank" rel="noopener noreferrer">
         <span class="ms">download</span>
-        <span id="heroDlLabel">Download for Windows</span>
+        <span id="heroDlLabel">Android Releases</span>
       </a>
       <a href="https://play.google.com/store/apps/details?id=net.ashmeet.hyperlauncher&hl=en_IN"
          class="btn btn-g" target="_blank">
@@ -507,50 +500,44 @@
     </div>
   </section>
 
-  <!-- DOWNLOAD -->
+  <!-- ANDROID DOWNLOAD -->
   <section id="download" class="section">
-    <p class="eyebrow reveal">Get it free</p>
-    <h2 class="stitle reveal">Download</h2>
+    <p class="eyebrow reveal">For Android</p>
+    <h2 class="stitle reveal">Download Hyper Launcher</h2>
     <div class="dlbox reveal">
       <p>Always free &amp; open source.</p>
-      <p class="dlver" id="dlBoxTag" aria-live="polite">Loading latest stable Windows release...</p>
+      <p class="dlver">Get Hyper Launcher v3 for Android.</p>
       <div class="dlrow">
-        <a id="mainDlBtn" href="https://github.com/ashmeet-op/Hyper_Launcher_Windows/releases" class="btn btn-w" target="_blank" rel="noopener noreferrer">
-          <span class="ms">download</span><span id="mainDlLabel">Download for Windows</span>
+        <a href="https://github.com/ashmeet-op/Hyper_Launcher_v3/releases" class="btn btn-w" target="_blank" rel="noopener noreferrer">
+          <span class="ms">download</span><span>Android Releases</span>
         </a>
         <a href="https://play.google.com/store/apps/details?id=net.ashmeet.hyperlauncher&hl=en_IN"
            class="btn btn-g" target="_blank">
           <span class="ms">storefront</span><span>Google Play</span>
         </a>
-        <a href="https://github.com/ashmeet-op/Hyper_Launcher_Windows"
+        <a href="https://github.com/ashmeet-op/Hyper_Launcher_v3"
            class="btn btn-g" target="_blank" rel="noopener noreferrer">
           <span class="ms" style="font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24">code</span><span>Source</span>
         </a>
       </div>
-      <button class="old-builds-toggle" id="releaseSignOut" type="button" hidden>Sign out of releases</button>
+    </div>
+  </section>
 
-      <!-- OLD BUILDS SECTION -->
-      <button class="old-builds-toggle" id="oldBuildsToggle" aria-expanded="false" aria-controls="oldBuildsContainer">
-        <span class="ms">history</span>
-        <span>View GitHub Releases</span>
-        <span class="ms">expand_more</span>
+  <!-- WINDOWS RELEASES -->
+  <section id="windows" class="section">
+    <p class="eyebrow reveal">For Windows</p>
+    <h2 class="stitle reveal">Hyper Launcher for Windows</h2>
+    <div class="dlbox reveal">
+      <p>Download the latest stable Windows release.</p>
+      <p class="dlver" id="windowsVersion" aria-live="polite">Loading Windows releases...</p>
+      <div class="dlrow" id="windowsDownloads"></div>
+      <p class="release-status" id="windowsStatus" role="status" aria-live="polite">Fetching releases...</p>
+      <button class="old-builds-toggle" id="windowsHistoryToggle" type="button" aria-expanded="false" aria-controls="windowsHistoryContainer">
+        <span class="ms">history</span><span>Previous Windows Releases</span><span class="ms">expand_more</span>
       </button>
-
-      <div class="old-builds-container" id="oldBuildsContainer">
-        <div class="old-builds-list" id="oldBuildsList">
-          <div class="release-status" id="releaseStatus" role="status" aria-live="polite">Loading releases...</div>
-        </div>
+      <div class="old-builds-container" id="windowsHistoryContainer">
+        <div class="old-builds-list" id="windowsHistoryList"></div>
       </div>
-      <dialog id="releaseLoginDialog" aria-labelledby="releaseLoginTitle">
-        <h3 id="releaseLoginTitle">Private Windows releases</h3>
-        <p>Enter the site access password to view release information. Your password is checked by the server and is never stored in this page.</p>
-        <form id="releaseLoginForm">
-          <label for="releasePassword">Access password</label>
-          <input id="releasePassword" name="password" type="password" autocomplete="current-password" required>
-          <p id="releaseLoginError" role="status" aria-live="polite"></p>
-          <button class="btn btn-w" type="submit">Sign in</button>
-        </form>
-      </dialog>
     </div>
   </section>
 
@@ -558,119 +545,89 @@
 </div>
 
 <script>
-  /* GitHub Windows release integration */
+  /* Private Windows releases are fetched through the server-side Vercel function. */
   const REPO = 'ashmeet-op/Hyper_Launcher_Windows';
-  const RELEASES_URL = `https://github.com/${REPO}/releases`;
   const WINDOWS_ASSET = /\.(exe|msi|zip|7z)$/i;
-  const releaseStatus = document.getElementById('releaseStatus');
-  function safeLink(url) { try { const parsed = new URL(url); return parsed.protocol === 'https:' && parsed.hostname === 'github.com' ? parsed.href : RELEASES_URL; } catch (_) { return RELEASES_URL; } }
-  function fileSize(bytes) { if (!Number.isFinite(bytes) || bytes < 0) return ''; const units=['B','KB','MB','GB']; let value=bytes, unit=0; while(value>=1024 && unit<units.length-1){value/=1024;unit++;} return `${value.toFixed(unit?1:0)} ${units[unit]}`; }
-  function textNode(parent, tag, cls, value) { const el=document.createElement(tag); if(cls) el.className=cls; el.textContent=value; parent.appendChild(el); return el; }
-  function assetLink(parent, asset) { const link=document.createElement('a'); const id=String(asset.id||''); link.href=/^\d{1,20}$/.test(id)?`/api/download?asset=${encodeURIComponent(id)}`:safeLink(asset.browser_download_url); link.rel='noopener noreferrer'; link.className='btn btn-w btn-build-dl'; link.textContent=`${asset.name}${fileSize(asset.size)?` · ${fileSize(asset.size)}`:''}`; parent.appendChild(link); }
-  async function loadReleases() {
-    const response=await fetch('/api/releases', { credentials:'same-origin', cache:'no-store' });
-    if(response.status===401) return null;
-    if(!response.ok){const data=await response.json().catch(()=>({}));throw new Error(data.error||'Could not load GitHub releases.');}
-    const releases=await response.json();
-    if(!Array.isArray(releases)) throw new Error('Unexpected response from releases service.');
-    return releases;
-  }
-  function releaseError(message) { releaseStatus.replaceChildren(); releaseStatus.textContent=message; const retry=document.createElement('button'); retry.type='button'; retry.textContent='Retry'; retry.addEventListener('click',fetchReleases); releaseStatus.appendChild(retry); }
+  const windowsVersion = document.getElementById('windowsVersion');
+  const windowsDownloads = document.getElementById('windowsDownloads');
+  const windowsStatus = document.getElementById('windowsStatus');
+  const windowsHistoryList = document.getElementById('windowsHistoryList');
 
-  async function fetchReleases() {
-    const heroBtn=document.getElementById('heroDlBtn'), heroLabel=document.getElementById('heroDlLabel');
-    const mainBtn=document.getElementById('mainDlBtn'), mainLabel=document.getElementById('mainDlLabel');
-    const dlBoxTag=document.getElementById('dlBoxTag'), headerTag=document.getElementById('headerTag');
-    const list=document.getElementById('oldBuildsList');
-    releaseStatus.className='release-status'; releaseStatus.textContent='Loading releases...';
+  function safeDownloadUrl(asset) {
+    const id = String(asset.id || '');
+    return /^\d{1,20}$/.test(id) ? `/api/download?asset=${encodeURIComponent(id)}` : '#windows';
+  }
+  function formatFileSize(bytes) {
+    if (!Number.isFinite(bytes) || bytes < 0) return '';
+    const units=['B','KB','MB','GB']; let value=bytes, unit=0;
+    while(value>=1024 && unit<units.length-1){value/=1024;unit++;}
+    return `${value.toFixed(unit?1:0)} ${units[unit]}`;
+  }
+  function appendText(parent, tag, className, value) {
+    const node=document.createElement(tag); if(className) node.className=className;
+    node.textContent=value; parent.appendChild(node); return node;
+  }
+  function makeDownloadButton(parent, asset, primary=false) {
+    const link=document.createElement('a');
+    link.href=safeDownloadUrl(asset); link.className=primary?'btn btn-w':'btn btn-g';
+    link.textContent=primary?'Download for Windows':`Download ${asset.name}`;
+    link.setAttribute('aria-label',`${link.textContent}: ${asset.name}${formatFileSize(asset.size)?`, ${formatFileSize(asset.size)}`:''}`);
+    parent.appendChild(link);
+    if(primary) appendText(parent,'span','build-date',`${asset.name}${formatFileSize(asset.size)?` · ${formatFileSize(asset.size)}`:''}`);
+  }
+  function renderRelease(release, parent) {
+    const card=document.createElement('article'); card.className='release-card';
+    appendText(card,'div','release-title',release.name||release.tag_name||'Untitled release');
+    appendText(card,'div','build-date',`${release.tag_name||'Version unavailable'}${release.prerelease?' · Prerelease':''}`);
+    const published=release.published_at&&!Number.isNaN(Date.parse(release.published_at))
+      ?new Date(release.published_at).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})
+      :'Published date unavailable';
+    appendText(card,'div','build-date',published);
+    const assets=(release.assets||[]).filter(asset=>WINDOWS_ASSET.test(asset.name||''));
+    if(assets.length){const buttons=document.createElement('div');buttons.className='release-assets';assets.forEach(asset=>makeDownloadButton(buttons,asset));card.appendChild(buttons);}
+    else appendText(card,'div','build-date','No Windows installer assets attached.');
+    if(release.body){const notes=document.createElement('details');notes.className='release-more';appendText(notes,'summary','','Release notes');appendText(notes,'div','release-notes',release.body);card.appendChild(notes);}
+    else appendText(card,'div','build-date','No release notes provided.');
+    parent.appendChild(card);
+  }
+  function showWindowsError(message) {
+    windowsStatus.replaceChildren(); windowsStatus.textContent=message;
+    const retry=document.createElement('button'); retry.type='button'; retry.textContent='Retry';
+    retry.addEventListener('click',fetchWindowsReleases); windowsStatus.appendChild(retry);
+  }
+  async function fetchWindowsReleases() {
+    windowsStatus.textContent='Fetching releases...'; windowsDownloads.replaceChildren();
     try {
-      const releases=await loadReleases();
-      if(releases===null){
-        releaseStatus.textContent='Sign in to view private releases.';
-        const signIn=document.createElement('button'); signIn.type='button'; signIn.textContent='Sign in';
-        signIn.addEventListener('click',()=>document.getElementById('releaseLoginDialog').showModal());
-        releaseStatus.appendChild(signIn);
-        const loginDialog=document.getElementById('releaseLoginDialog');
-        if(!loginDialog.open) loginDialog.showModal();
-        return;
-      }
-      document.getElementById('releaseSignOut').hidden=false;
-      const stable=releases.filter(rel=>!rel.draft&&!rel.prerelease&&rel.tag_name).sort((x,y)=>(Date.parse(y.published_at)||0)-(Date.parse(x.published_at)||0))[0];
-      const history=releases.filter(rel=>!rel.draft).slice().sort((x,y)=>(Date.parse(y.published_at)||0)-(Date.parse(x.published_at)||0));
-      list.replaceChildren(); releaseStatus.remove();
+      const response=await fetch('/api/releases',{cache:'no-store'});
+      if(!response.ok){const error=await response.json().catch(()=>({}));throw new Error(error.error||'Could not load Windows releases.');}
+      const releases=await response.json();
+      if(!Array.isArray(releases))throw new Error('Unexpected response from releases service.');
+      const history=releases.filter(release=>!release.draft).sort((a,b)=>(Date.parse(b.published_at)||0)-(Date.parse(a.published_at)||0));
+      const stable=history.filter(release=>!release.prerelease&&release.tag_name)[0];
+      windowsHistoryList.replaceChildren();
       if(stable){
-        const assets=(stable.assets||[]).filter(a=>WINDOWS_ASSET.test(a.name||''));
-        const primary=assets.find(a=>/\.exe$/i.test(a.name))||assets[0];
-        const url=primary?safeLink(primary.browser_download_url):safeLink(stable.html_url);
-        heroBtn.href=url; mainBtn.href=url; headerTag.textContent=stable.tag_name;
-        dlBoxTag.textContent=`${stable.tag_name} · Latest stable Windows release`;
-        heroLabel.textContent='Download for Windows';
-        mainLabel.textContent=primary?'Download for Windows':`View ${stable.tag_name} release`;
-        assets.filter(asset=>asset!==primary).forEach(asset=>assetLink(document.querySelector('.dlrow'),asset));
-      } else {
-        dlBoxTag.textContent='No stable Windows release is available yet.';
-        heroBtn.href=RELEASES_URL; mainBtn.href=RELEASES_URL;
-        heroLabel.textContent='View Releases'; mainLabel.textContent='View GitHub Releases';
-      }
-      if(!history.length){textNode(list,'div','release-status','No releases are available yet.');return;}
-      history.forEach(rel=>{
-        const card=document.createElement('article'); card.className='release-card';
-        const heading=document.createElement('div'); heading.className='release-heading'; card.appendChild(heading);
-        const info=document.createElement('div'); heading.appendChild(info);
-        textNode(info,'div','release-title',rel.name||rel.tag_name||'Untitled release');
-        textNode(info,'div','build-date',`${rel.tag_name||'Version unavailable'}${rel.prerelease?' · Prerelease':''}`);
-        const date=rel.published_at&&!Number.isNaN(Date.parse(rel.published_at))?new Date(rel.published_at).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}):'Published date unavailable';
-        textNode(info,'div','build-date',date);
-        const github=document.createElement('a'); github.href=safeLink(rel.html_url); github.target='_blank'; github.rel='noopener noreferrer'; github.textContent='GitHub release'; heading.appendChild(github);
-        const assets=(rel.assets||[]).filter(asset=>WINDOWS_ASSET.test(asset.name||''));
-        if(assets.length){const box=document.createElement('div');box.className='release-assets';assets.forEach(asset=>assetLink(box,asset));card.appendChild(box);}else textNode(card,'div','build-date','No Windows installer assets attached.');
-        if(rel.body){const notes=document.createElement('details');notes.className='release-more';textNode(notes,'summary','','Release notes');textNode(notes,'div','release-notes',rel.body);card.appendChild(notes);}else textNode(card,'div','build-date','No release notes provided.');
-        list.appendChild(card);
-      });
-    } catch(error) {
-      dlBoxTag.textContent='Unable to load the latest release.'; heroBtn.href=RELEASES_URL; mainBtn.href=RELEASES_URL;
-      heroLabel.textContent='View GitHub Releases'; mainLabel.textContent='View GitHub Releases';
-      if(releaseStatus.isConnected)releaseError(error.message||'Unable to load releases.');
-    }
+        const assets=(stable.assets||[]).filter(asset=>WINDOWS_ASSET.test(asset.name||''));
+        const exe=assets.find(asset=>/\.exe$/i.test(asset.name));
+        const primary=exe||assets[0];
+        windowsVersion.textContent=`${stable.tag_name} · Latest stable release`;
+        if(primary){makeDownloadButton(windowsDownloads,primary,true);assets.filter(asset=>asset!==primary).forEach(asset=>makeDownloadButton(windowsDownloads,asset));}
+        else {windowsVersion.textContent=`${stable.tag_name} · No Windows installer is attached.`;}
+      } else windowsVersion.textContent='No stable Windows release is available yet.';
+      if(!history.length)appendText(windowsHistoryList,'div','release-status','No releases are available yet.');
+      else history.forEach(release=>renderRelease(release,windowsHistoryList));
+      windowsStatus.textContent='';
+    } catch(error) { showWindowsError(error.message||'Unable to load Windows releases.'); }
   }
-  fetchReleases();
-  document.getElementById('releaseLoginForm').addEventListener('submit', async event => {
-    event.preventDefault();
-    const form=event.currentTarget, password=form.elements.password.value;
-    const error=document.getElementById('releaseLoginError'); error.textContent='Checking password...';
-    try {
-      const response=await fetch('/api/access', { method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password}) });
-      const result=await response.json().catch(()=>({}));
-      if(!response.ok) throw new Error(result.error||'Could not sign in.');
-      form.reset(); error.textContent=''; document.getElementById('releaseLoginDialog').close(); fetchReleases();
-    } catch(err) { error.textContent=err.message||'Could not sign in.'; }
-  });
-  document.getElementById('releaseSignOut').addEventListener('click', async () => {
-    await fetch('/api/access', { method:'DELETE', credentials:'same-origin' }).catch(() => {});
-    document.getElementById('releaseSignOut').hidden=true;
-    document.getElementById('oldBuildsList').replaceChildren();
-    document.getElementById('mainDlBtn').href='#download';
-    document.getElementById('heroDlBtn').href='#download';
-    document.getElementById('headerTag').textContent='v3';
-    document.getElementById('dlBoxTag').textContent='Sign in to view private releases.';
-    document.getElementById('mainDlLabel').textContent='Sign in to download';
-    document.getElementById('heroDlLabel').textContent='Sign in to download';
-    const status=textNode(document.getElementById('oldBuildsList'),'div','release-status','Sign in to view private releases.');
-    const signIn=document.createElement('button'); signIn.type='button'; signIn.textContent='Sign in';
-    signIn.addEventListener('click',()=>document.getElementById('releaseLoginDialog').showModal()); status.appendChild(signIn);
-    document.getElementById('releaseLoginDialog').showModal();
-  });
-  /* Old Builds Accordion Toggle */
-  const toggleBtn = document.getElementById('oldBuildsToggle');
-  const buildsContainer = document.getElementById('oldBuildsContainer');
+  fetchWindowsReleases();
 
-  toggleBtn.addEventListener('click', () => {
+  const windowsHistoryToggle=document.getElementById('windowsHistoryToggle');
+  const windowsHistoryContainer=document.getElementById('windowsHistoryContainer');
+  windowsHistoryToggle.addEventListener('click',()=>{
     haptic(10);
-    const isOpen = buildsContainer.classList.toggle('open');
-    toggleBtn.classList.toggle('open', isOpen);
-    toggleBtn.setAttribute('aria-expanded', String(isOpen));
+    const open=windowsHistoryContainer.classList.toggle('open');
+    windowsHistoryToggle.classList.toggle('open',open);
+    windowsHistoryToggle.setAttribute('aria-expanded',String(open));
   });
-
   /* Haptic feedback helper */
   function haptic(ms = 12) {
     if (navigator.vibrate) {
@@ -794,7 +751,6 @@
 
   window.addEventListener('load', () => {
     setActive(navLinks[0]);
-    fetchReleases();
   });
   window.addEventListener('resize', () => {
     const active = navEl.querySelector('a.active') || navLinks[0];

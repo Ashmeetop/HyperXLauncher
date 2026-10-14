@@ -24,8 +24,8 @@ module.exports = async (req, res) => {
       return res.status(502).json({ error: 'GitHub could not provide releases right now.' });
     }
     const repositoryInfo = await repository.json();
-    if (repositoryInfo.private === true) {
-      return res.status(403).json({ error: 'Release information is unavailable.' });
+    if (repositoryInfo.private !== true && repositoryInfo.private !== false) {
+      return res.status(502).json({ error: 'GitHub returned an unexpected repository response.' });
     }
 
     const response = await fetch(`https://api.github.com/repos/${REPOSITORY}/releases?per_page=100`, { headers });
