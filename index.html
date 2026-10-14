@@ -431,7 +431,7 @@
     <div class="hero-btns">
       <a id="heroDlBtn" href="https://github.com/ashmeet-op/Hyper_Launcher_Windows/releases" class="btn btn-w" target="_blank" rel="noopener noreferrer">
         <span class="ms">download</span>
-        <span id="heroDlLabel">Download APK</span>
+        <span id="heroDlLabel">Download for Windows</span>
       </a>
       <a href="https://play.google.com/store/apps/details?id=net.ashmeet.hyperlauncher&hl=en_IN"
          class="btn btn-g" target="_blank">
@@ -509,7 +509,7 @@
       <p class="dlver" id="dlBoxTag" aria-live="polite">Loading latest stable Windows release...</p>
       <div class="dlrow">
         <a id="mainDlBtn" href="https://github.com/ashmeet-op/Hyper_Launcher_Windows/releases" class="btn btn-w" target="_blank" rel="noopener noreferrer">
-          <span class="ms">download</span><span id="mainDlLabel">View Windows Releases</span>
+          <span class="ms">download</span><span id="mainDlLabel">Download for Windows</span>
         </a>
         <a href="https://play.google.com/store/apps/details?id=net.ashmeet.hyperlauncher&hl=en_IN"
            class="btn btn-g" target="_blank">
@@ -522,9 +522,9 @@
       </div>
 
       <!-- OLD BUILDS SECTION -->
-      <button class="old-builds-toggle" id="oldBuildsToggle">
+      <button class="old-builds-toggle" id="oldBuildsToggle" aria-expanded="false" aria-controls="oldBuildsContainer">
         <span class="ms">history</span>
-        <span>View Previous Builds</span>
+        <span>View GitHub Releases</span>
         <span class="ms">expand_more</span>
       </button>
 
@@ -549,6 +549,20 @@
   function fileSize(bytes) { if (!Number.isFinite(bytes) || bytes < 0) return ''; const units=['B','KB','MB','GB']; let value=bytes, unit=0; while(value>=1024 && unit<units.length-1){value/=1024;unit++;} return `${value.toFixed(unit?1:0)} ${units[unit]}`; }
   function textNode(parent, tag, cls, value) { const el=document.createElement(tag); if(cls) el.className=cls; el.textContent=value; parent.appendChild(el); return el; }
   function assetLink(parent, asset) { const link=document.createElement('a'); link.href=safeLink(asset.browser_download_url); link.target='_blank'; link.rel='noopener noreferrer'; link.className='btn btn-w btn-build-dl'; link.textContent=`${asset.name}${fileSize(asset.size)?` · ${fileSize(asset.size)}`:''}`; parent.appendChild(link); }
+  async function loadReleases() {
+    let response;
+    try { response=await fetch('/api/releases'); } catch (_) {}
+    if(response && response.ok) {
+      const data=await response.json();
+      if(Array.isArray(data)) return data;
+    }
+    // Public-repository fallback also supports static/local previews without Vercel Functions.
+    response=await fetch(`https://api.github.com/repos/${REPO}/releases?per_page=100`, { headers:{ Accept:'application/vnd.github+json' } });
+    if(!response.ok) throw new Error(response.status===403||response.status===429?'GitHub is limiting release requests. Please try again shortly.':'Could not load GitHub releases.');
+    const releases=await response.json();
+    if(!Array.isArray(releases)) throw new Error('Unexpected response from GitHub.');
+    return releases.filter(rel=>!rel.draft);
+  }
   function releaseError(message) { releaseStatus.replaceChildren(); releaseStatus.textContent=message; const retry=document.createElement('button'); retry.type='button'; retry.textContent='Retry'; retry.addEventListener('click',fetchReleases); releaseStatus.appendChild(retry); }
 
   async function fetchReleases() {
@@ -558,20 +572,19 @@
     const list=document.getElementById('oldBuildsList');
     releaseStatus.className='release-status'; releaseStatus.textContent='Loading releases...';
     try {
-      const response=await fetch('/api/releases');
-      if(!response.ok){const data=await response.json().catch(()=>({}));throw new Error(data.error||'Could not load releases.');}
-      const releases=await response.json(); if(!Array.isArray(releases))throw new Error('Unexpected response from releases service.');
-      const stable=releases.filter(rel=>!rel.prerelease && rel.tag_name).sort((x,y)=>(Date.parse(y.published_at)||0)-(Date.parse(x.published_at)||0))[0];
-      const history=releases.slice().sort((x,y)=>(Date.parse(y.published_at)||0)-(Date.parse(x.published_at)||0));
+      const releases=await loadReleases();
+      const stable=releases.filter(rel=>!rel.draft&&!rel.prerelease&&rel.tag_name).sort((x,y)=>(Date.parse(y.published_at)||0)-(Date.parse(x.published_at)||0))[0];
+      const history=releases.filter(rel=>!rel.draft).slice().sort((x,y)=>(Date.parse(y.published_at)||0)-(Date.parse(x.published_at)||0));
       list.replaceChildren(); releaseStatus.remove();
       if(stable){
         const assets=(stable.assets||[]).filter(a=>WINDOWS_ASSET.test(a.name||''));
-        const primary=assets[0], url=primary?safeLink(primary.browser_download_url):safeLink(stable.html_url);
+        const primary=assets.find(a=>/\.exe$/i.test(a.name))||assets[0];
+        const url=primary?safeLink(primary.browser_download_url):safeLink(stable.html_url);
         heroBtn.href=url; mainBtn.href=url; headerTag.textContent=stable.tag_name;
         dlBoxTag.textContent=`${stable.tag_name} · Latest stable Windows release`;
-        heroLabel.textContent=`Download ${stable.tag_name}`;
-        mainLabel.textContent=primary?`Download ${primary.name}`:`View ${stable.tag_name} release`;
-        assets.slice(1).forEach(asset=>assetLink(document.querySelector('.dlrow'),asset));
+        heroLabel.textContent='Download for Windows';
+        mainLabel.textContent=primary?'Download for Windows':`View ${stable.tag_name} release`;
+        assets.filter(asset=>asset!==primary).forEach(asset=>assetLink(document.querySelector('.dlrow'),asset));
       } else {
         dlBoxTag.textContent='No stable Windows release is available yet.';
         heroBtn.href=RELEASES_URL; mainBtn.href=RELEASES_URL;
@@ -607,6 +620,7 @@
     haptic(10);
     const isOpen = buildsContainer.classList.toggle('open');
     toggleBtn.classList.toggle('open', isOpen);
+    toggleBtn.setAttribute('aria-expanded', String(isOpen));
   });
 
   /* Haptic feedback helper */
