@@ -46,6 +46,7 @@ module.exports = async (req, res) => {
       prerelease: Boolean(release.prerelease),
       html_url: release.html_url,
       assets: Array.isArray(release.assets) ? release.assets.map(asset => ({
+        id: asset.id,
         name: asset.name,
         size: asset.size,
         browser_download_url: asset.browser_download_url

@@ -350,6 +350,13 @@
     .release-status button { margin-left:8px; color:var(--text); background:transparent; border:0; text-decoration:underline; cursor:pointer; font:inherit; }
     .release-more { color:var(--muted2); font-size:12px; margin-top:10px; cursor:pointer; }
     .release-notes { color:var(--muted2); font-size:12px; line-height:1.55; white-space:pre-wrap; overflow-wrap:anywhere; margin-top:10px; }
+    #releaseLoginDialog { width:min(420px,calc(100% - 32px)); margin:auto; padding:24px; color:var(--text); background:#111; border:1px solid var(--border-h); border-radius:18px; }
+    #releaseLoginDialog::backdrop { background:rgba(0,0,0,.78); backdrop-filter:blur(4px); }
+    #releaseLoginDialog h3 { margin-bottom:8px; }
+    #releaseLoginDialog p { color:var(--muted2); font-size:13px; line-height:1.5; }
+    #releaseLoginForm { display:grid; gap:12px; margin-top:18px; }
+    #releaseLoginForm input { width:100%; padding:12px; color:var(--text); background:#080808; border:1px solid var(--border-h); border-radius:10px; font:inherit; }
+    #releaseLoginError { min-height:18px; color:#fca5a5 !important; }
 
     /* White download button inside old builds */
     .btn-build-dl {
@@ -520,6 +527,7 @@
           <span class="ms" style="font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24">code</span><span>Source</span>
         </a>
       </div>
+      <button class="old-builds-toggle" id="releaseSignOut" type="button" hidden>Sign out of releases</button>
 
       <!-- OLD BUILDS SECTION -->
       <button class="old-builds-toggle" id="oldBuildsToggle" aria-expanded="false" aria-controls="oldBuildsContainer">
@@ -533,6 +541,16 @@
           <div class="release-status" id="releaseStatus" role="status" aria-live="polite">Loading releases...</div>
         </div>
       </div>
+      <dialog id="releaseLoginDialog" aria-labelledby="releaseLoginTitle">
+        <h3 id="releaseLoginTitle">Private Windows releases</h3>
+        <p>Enter the site access password to view release information. Your password is checked by the server and is never stored in this page.</p>
+        <form id="releaseLoginForm">
+          <label for="releasePassword">Access password</label>
+          <input id="releasePassword" name="password" type="password" autocomplete="current-password" required>
+          <p id="releaseLoginError" role="status" aria-live="polite"></p>
+          <button class="btn btn-w" type="submit">Sign in</button>
+        </form>
+      </dialog>
     </div>
   </section>
 
@@ -548,20 +566,14 @@
   function safeLink(url) { try { const parsed = new URL(url); return parsed.protocol === 'https:' && parsed.hostname === 'github.com' ? parsed.href : RELEASES_URL; } catch (_) { return RELEASES_URL; } }
   function fileSize(bytes) { if (!Number.isFinite(bytes) || bytes < 0) return ''; const units=['B','KB','MB','GB']; let value=bytes, unit=0; while(value>=1024 && unit<units.length-1){value/=1024;unit++;} return `${value.toFixed(unit?1:0)} ${units[unit]}`; }
   function textNode(parent, tag, cls, value) { const el=document.createElement(tag); if(cls) el.className=cls; el.textContent=value; parent.appendChild(el); return el; }
-  function assetLink(parent, asset) { const link=document.createElement('a'); link.href=safeLink(asset.browser_download_url); link.target='_blank'; link.rel='noopener noreferrer'; link.className='btn btn-w btn-build-dl'; link.textContent=`${asset.name}${fileSize(asset.size)?` · ${fileSize(asset.size)}`:''}`; parent.appendChild(link); }
+  function assetLink(parent, asset) { const link=document.createElement('a'); const id=String(asset.id||''); link.href=/^\d{1,20}$/.test(id)?`/api/download?asset=${encodeURIComponent(id)}`:safeLink(asset.browser_download_url); link.rel='noopener noreferrer'; link.className='btn btn-w btn-build-dl'; link.textContent=`${asset.name}${fileSize(asset.size)?` · ${fileSize(asset.size)}`:''}`; parent.appendChild(link); }
   async function loadReleases() {
-    let response;
-    try { response=await fetch('/api/releases'); } catch (_) {}
-    if(response && response.ok) {
-      const data=await response.json();
-      if(Array.isArray(data)) return data;
-    }
-    // Public-repository fallback also supports static/local previews without Vercel Functions.
-    response=await fetch(`https://api.github.com/repos/${REPO}/releases?per_page=100`, { headers:{ Accept:'application/vnd.github+json' } });
-    if(!response.ok) throw new Error(response.status===403||response.status===429?'GitHub is limiting release requests. Please try again shortly.':'Could not load GitHub releases.');
+    const response=await fetch('/api/releases', { credentials:'same-origin', cache:'no-store' });
+    if(response.status===401) return null;
+    if(!response.ok){const data=await response.json().catch(()=>({}));throw new Error(data.error||'Could not load GitHub releases.');}
     const releases=await response.json();
-    if(!Array.isArray(releases)) throw new Error('Unexpected response from GitHub.');
-    return releases.filter(rel=>!rel.draft);
+    if(!Array.isArray(releases)) throw new Error('Unexpected response from releases service.');
+    return releases;
   }
   function releaseError(message) { releaseStatus.replaceChildren(); releaseStatus.textContent=message; const retry=document.createElement('button'); retry.type='button'; retry.textContent='Retry'; retry.addEventListener('click',fetchReleases); releaseStatus.appendChild(retry); }
 
@@ -573,6 +585,16 @@
     releaseStatus.className='release-status'; releaseStatus.textContent='Loading releases...';
     try {
       const releases=await loadReleases();
+      if(releases===null){
+        releaseStatus.textContent='Sign in to view private releases.';
+        const signIn=document.createElement('button'); signIn.type='button'; signIn.textContent='Sign in';
+        signIn.addEventListener('click',()=>document.getElementById('releaseLoginDialog').showModal());
+        releaseStatus.appendChild(signIn);
+        const loginDialog=document.getElementById('releaseLoginDialog');
+        if(!loginDialog.open) loginDialog.showModal();
+        return;
+      }
+      document.getElementById('releaseSignOut').hidden=false;
       const stable=releases.filter(rel=>!rel.draft&&!rel.prerelease&&rel.tag_name).sort((x,y)=>(Date.parse(y.published_at)||0)-(Date.parse(x.published_at)||0))[0];
       const history=releases.filter(rel=>!rel.draft).slice().sort((x,y)=>(Date.parse(y.published_at)||0)-(Date.parse(x.published_at)||0));
       list.replaceChildren(); releaseStatus.remove();
@@ -612,6 +634,32 @@
     }
   }
   fetchReleases();
+  document.getElementById('releaseLoginForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    const form=event.currentTarget, password=form.elements.password.value;
+    const error=document.getElementById('releaseLoginError'); error.textContent='Checking password...';
+    try {
+      const response=await fetch('/api/access', { method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password}) });
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok) throw new Error(result.error||'Could not sign in.');
+      form.reset(); error.textContent=''; document.getElementById('releaseLoginDialog').close(); fetchReleases();
+    } catch(err) { error.textContent=err.message||'Could not sign in.'; }
+  });
+  document.getElementById('releaseSignOut').addEventListener('click', async () => {
+    await fetch('/api/access', { method:'DELETE', credentials:'same-origin' }).catch(() => {});
+    document.getElementById('releaseSignOut').hidden=true;
+    document.getElementById('oldBuildsList').replaceChildren();
+    document.getElementById('mainDlBtn').href='#download';
+    document.getElementById('heroDlBtn').href='#download';
+    document.getElementById('headerTag').textContent='v3';
+    document.getElementById('dlBoxTag').textContent='Sign in to view private releases.';
+    document.getElementById('mainDlLabel').textContent='Sign in to download';
+    document.getElementById('heroDlLabel').textContent='Sign in to download';
+    const status=textNode(document.getElementById('oldBuildsList'),'div','release-status','Sign in to view private releases.');
+    const signIn=document.createElement('button'); signIn.type='button'; signIn.textContent='Sign in';
+    signIn.addEventListener('click',()=>document.getElementById('releaseLoginDialog').showModal()); status.appendChild(signIn);
+    document.getElementById('releaseLoginDialog').showModal();
+  });
   /* Old Builds Accordion Toggle */
   const toggleBtn = document.getElementById('oldBuildsToggle');
   const buildsContainer = document.getElementById('oldBuildsContainer');

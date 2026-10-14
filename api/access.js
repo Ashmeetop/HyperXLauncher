@@ -18,8 +18,12 @@ module.exports = (req, res) => {
 
   const origin = req.headers.origin;
   const host = req.headers.host;
-  if (origin && host && new URL(origin).host !== host) {
-    return res.status(403).json({ error: 'Sign-in request rejected.' });
+  if (origin && host) {
+    try {
+      if (new URL(origin).host !== host) return res.status(403).json({ error: 'Sign-in request rejected.' });
+    } catch (_) {
+      return res.status(403).json({ error: 'Sign-in request rejected.' });
+    }
   }
 
   if (!process.env.SITE_PASSWORD || process.env.SITE_PASSWORD.length < 12 ||
