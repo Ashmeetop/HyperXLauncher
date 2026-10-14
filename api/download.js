@@ -1,15 +1,12 @@
 const REPOSITORY = 'ashmeet-op/Hyper_Launcher_Windows';
-const { isAuthorized } = require('../lib/release-auth');
 
 module.exports = async (req, res) => {
-  res.setHeader('Cache-Control', 'private, no-store');
-  res.setHeader('Vary', 'Cookie');
+  res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error: 'Method not allowed.' });
   }
-  if (!isAuthorized(req)) return res.status(401).json({ error: 'Sign in to download private releases.' });
-  if (!process.env.GITHUB_TOKEN) return res.status(503).json({ error: 'Private release access is not configured.' });
+  if (!process.env.GITHUB_TOKEN) return res.status(503).json({ error: 'GitHub download access is not configured.' });
 
   const assetId = String(req.query && req.query.asset || '');
   if (!/^\d{1,20}$/.test(assetId)) return res.status(400).json({ error: 'Invalid release asset.' });
@@ -33,20 +30,16 @@ module.exports = async (req, res) => {
     if (!publishedAsset) return res.status(404).json({ error: 'Release asset not found.' });
 
     const fileResponse = await fetch(`https://api.github.com/repos/${REPOSITORY}/releases/assets/${assetId}`, {
-      headers: { ...headers, Accept: 'application/octet-stream' },
-      redirect: 'manual'
+      headers: { ...headers, Accept: 'application/octet-stream' }
     });
-    if ([301, 302, 303, 307, 308].includes(fileResponse.status)) {
-      const location = fileResponse.headers.get('location');
-      const target = location && new URL(location);
-      if (!target || target.protocol !== 'https:' ||
-          !(target.hostname === 'github.com' || target.hostname.endsWith('.githubusercontent.com'))) {
-        return res.status(502).json({ error: 'GitHub returned an invalid download location.' });
-      }
-      res.setHeader('Location', target.href);
-      return res.status(302).end();
-    }
     if (!fileResponse.ok || !fileResponse.body) return res.status(502).json({ error: 'GitHub could not provide the download.' });
+    const downloadHost = new URL(fileResponse.url).hostname;
+    if (downloadHost !== 'github.com' && !downloadHost.endsWith('.githubusercontent.com')) {
+      return res.status(502).json({ error: 'GitHub returned an invalid download response.' });
+    }
+    if ((fileResponse.headers.get('content-type') || '').includes('application/json')) {
+      return res.status(502).json({ error: 'GitHub did not return a release file.' });
+    }
 
     const { Readable } = require('node:stream');
     res.setHeader('Content-Type', fileResponse.headers.get('content-type') || 'application/octet-stream');
