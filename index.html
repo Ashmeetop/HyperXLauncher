@@ -13,7 +13,7 @@
 
   <style>
     :root {
-      --bg: #050505;
+      --bg: #05050560;
       --surface: rgba(255,255,255,0.04);
       --border: rgba(255,255,255,0.08);
       --border-h: rgba(255,255,255,0.18);
@@ -321,7 +321,7 @@
       opacity: 0; margin-top: 0;
     }
     .old-builds-container.open {
-      max-height: 450px; opacity: 1; margin-top: 20px;
+      max-height: 1200px; opacity: 1; margin-top: 20px;
     }
     .old-builds-list {
       max-width: 520px; margin: 0 auto;
@@ -339,6 +339,17 @@
     .build-item:hover { background: rgba(255,255,255,0.06); }
     .build-tag { font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
     .build-date { font-size: 11px; color: var(--muted2); }
+    .release-card { padding:14px 16px; border-bottom:1px solid var(--border); }
+    .release-card:last-child { border-bottom:none; }
+    .release-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+    .release-heading a { overflow-wrap:anywhere; }
+    .release-title { color:var(--text); font-size:14px; font-weight:700; }
+    .release-assets { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .release-assets a { color:var(--text); font-size:12px; text-decoration:none; overflow-wrap:anywhere; }
+    .release-status { color:var(--muted2); font-size:13px; padding:16px; text-align:center; }
+    .release-status button { margin-left:8px; color:var(--text); background:transparent; border:0; text-decoration:underline; cursor:pointer; font:inherit; }
+    .release-more { color:var(--muted2); font-size:12px; margin-top:10px; cursor:pointer; }
+    .release-notes { color:var(--muted2); font-size:12px; line-height:1.55; white-space:pre-wrap; overflow-wrap:anywhere; margin-top:10px; }
 
     /* White download button inside old builds */
     .btn-build-dl {
@@ -398,7 +409,7 @@
       <span class="nav-indicator" id="navIndicator"></span>
     </nav>
     <div class="hdr-r">
-      <a href="https://github.com/ashmeet-op/Hyper_Launcher_v3" class="ibtn" target="_blank" title="GitHub">
+      <a href="https://github.com/ashmeet-op/Hyper_Launcher_Windows" class="ibtn" target="_blank" title="GitHub">
         <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.235-3.22-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.3 1.23a11.5 11.5 0 0 1 3-.405c1.02.005 2.045.138 3 .405 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
       </a>
       <a href="https://discord.gg/GxTY8Ckxry" class="ibtn" target="_blank" title="Discord">
@@ -418,7 +429,7 @@
     <h1>Hyper Launcher</h1>
     <p class="hero-sub">Minimal, fast Minecraft launcher<br>for Vanilla &amp; Fabric.</p>
     <div class="hero-btns">
-      <a id="heroDlBtn" href="#" class="btn btn-w">
+      <a id="heroDlBtn" href="https://github.com/ashmeet-op/Hyper_Launcher_Windows/releases" class="btn btn-w" target="_blank" rel="noopener noreferrer">
         <span class="ms">download</span>
         <span id="heroDlLabel">Download APK</span>
       </a>
@@ -495,17 +506,17 @@
     <h2 class="stitle reveal">Download</h2>
     <div class="dlbox reveal">
       <p>Always free &amp; open source.</p>
-      <p class="dlver" id="dlBoxTag">Fetching latest build...</p>
+      <p class="dlver" id="dlBoxTag" aria-live="polite">Loading latest stable Windows release...</p>
       <div class="dlrow">
-        <a id="mainDlBtn" href="#" class="btn btn-w">
-          <span class="ms">android</span><span id="mainDlLabel">Latest Release (.apk)</span>
+        <a id="mainDlBtn" href="https://github.com/ashmeet-op/Hyper_Launcher_Windows/releases" class="btn btn-w" target="_blank" rel="noopener noreferrer">
+          <span class="ms">download</span><span id="mainDlLabel">View Windows Releases</span>
         </a>
         <a href="https://play.google.com/store/apps/details?id=net.ashmeet.hyperlauncher&hl=en_IN"
            class="btn btn-g" target="_blank">
           <span class="ms">storefront</span><span>Google Play</span>
         </a>
-        <a href="https://github.com/hollowlauncher/Hyper_Launcher_v3"
-           class="btn btn-g" target="_blank">
+        <a href="https://github.com/ashmeet-op/Hyper_Launcher_Windows"
+           class="btn btn-g" target="_blank" rel="noopener noreferrer">
           <span class="ms" style="font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24">code</span><span>Source</span>
         </a>
       </div>
@@ -519,9 +530,7 @@
 
       <div class="old-builds-container" id="oldBuildsContainer">
         <div class="old-builds-list" id="oldBuildsList">
-          <div style="padding: 16px; text-align: center; color: var(--muted2); font-size: 12px;">
-            Loading release history...
-          </div>
+          <div class="release-status" id="releaseStatus" role="status" aria-live="polite">Loading releases...</div>
         </div>
       </div>
     </div>
@@ -531,82 +540,65 @@
 </div>
 
 <script>
-  /* ── GitHub API Release Fetcher ── */
-  const REPO = 'ashmeet-op/Hyper_Launcher_v3';
+  /* GitHub Windows release integration */
+  const REPO = 'ashmeet-op/Hyper_Launcher_Windows';
+  const RELEASES_URL = `https://github.com/${REPO}/releases`;
+  const WINDOWS_ASSET = /\.(exe|msi|zip|7z)$/i;
+  const releaseStatus = document.getElementById('releaseStatus');
+  function safeLink(url) { try { const parsed = new URL(url); return parsed.protocol === 'https:' && parsed.hostname === 'github.com' ? parsed.href : RELEASES_URL; } catch (_) { return RELEASES_URL; } }
+  function fileSize(bytes) { if (!Number.isFinite(bytes) || bytes < 0) return ''; const units=['B','KB','MB','GB']; let value=bytes, unit=0; while(value>=1024 && unit<units.length-1){value/=1024;unit++;} return `${value.toFixed(unit?1:0)} ${units[unit]}`; }
+  function textNode(parent, tag, cls, value) { const el=document.createElement(tag); if(cls) el.className=cls; el.textContent=value; parent.appendChild(el); return el; }
+  function assetLink(parent, asset) { const link=document.createElement('a'); link.href=safeLink(asset.browser_download_url); link.target='_blank'; link.rel='noopener noreferrer'; link.className='btn btn-w btn-build-dl'; link.textContent=`${asset.name}${fileSize(asset.size)?` · ${fileSize(asset.size)}`:''}`; parent.appendChild(link); }
+  function releaseError(message) { releaseStatus.replaceChildren(); releaseStatus.textContent=message; const retry=document.createElement('button'); retry.type='button'; retry.textContent='Retry'; retry.addEventListener('click',fetchReleases); releaseStatus.appendChild(retry); }
 
   async function fetchReleases() {
-    const heroBtn = document.getElementById('heroDlBtn');
-    const heroLabel = document.getElementById('heroDlLabel');
-    const mainBtn = document.getElementById('mainDlBtn');
-    const mainLabel = document.getElementById('mainDlLabel');
-    const dlBoxTag = document.getElementById('dlBoxTag');
-    const headerTag = document.getElementById('headerTag');
-    const oldBuildsList = document.getElementById('oldBuildsList');
-
+    const heroBtn=document.getElementById('heroDlBtn'), heroLabel=document.getElementById('heroDlLabel');
+    const mainBtn=document.getElementById('mainDlBtn'), mainLabel=document.getElementById('mainDlLabel');
+    const dlBoxTag=document.getElementById('dlBoxTag'), headerTag=document.getElementById('headerTag');
+    const list=document.getElementById('oldBuildsList');
+    releaseStatus.className='release-status'; releaseStatus.textContent='Loading releases...';
     try {
-      const res = await fetch(`https://api.github.com/repos/${REPO}/releases`);
-      if (!res.ok) throw new Error();
-      const releases = await res.json();
-
-      if (releases.length > 0) {
-        const latest = releases[0];
-        const apkAsset = latest.assets?.find(a => a.name.endsWith('.apk'));
-        const downloadUrl = apkAsset ? apkAsset.browser_download_url : latest.html_url;
-
-        heroBtn.href = downloadUrl;
-        mainBtn.href = downloadUrl;
-        
-        const tagText = latest.tag_name || 'Latest';
-        dlBoxTag.textContent = `${tagText} • ${apkAsset ? apkAsset.name : 'Latest Release'}`;
-        headerTag.textContent = tagText;
-        heroLabel.textContent = `Download ${tagText}`;
-        mainLabel.textContent = `Get APK (${tagText})`;
-
-        /* Render Old Builds List */
-        oldBuildsList.innerHTML = '';
-        releases.forEach(rel => {
-          const relApk = rel.assets?.find(a => a.name.endsWith('.apk'));
-          const url = relApk ? relApk.browser_download_url : rel.html_url;
-          const pubDate = new Date(rel.published_at).toLocaleDateString(undefined, {
-            year: 'numeric', month: 'short', day: 'numeric'
-          });
-
-          const item = document.createElement('div');
-          item.className = 'build-item';
-          item.innerHTML = `
-            <div>
-              <div class="build-tag">
-                <span class="ms" style="font-size:14px;color:var(--muted2)">sell</span> 
-                ${rel.tag_name} ${rel.prerelease ? '<span style="font-size:9px;background:#ef4444;color:#fff;padding:1px 5px;border-radius:4px;">Pre</span>' : ''}
-              </div>
-              <div class="build-date">${pubDate}</div>
-            </div>
-            <a href="${url}" class="btn btn-w btn-build-dl" target="_blank">
-              <span class="ms">download</span>
-              <span>Download</span>
-            </a>
-          `;
-          oldBuildsList.appendChild(item);
-        });
+      const response=await fetch('/api/releases');
+      if(!response.ok){const data=await response.json().catch(()=>({}));throw new Error(data.error||'Could not load releases.');}
+      const releases=await response.json(); if(!Array.isArray(releases))throw new Error('Unexpected response from releases service.');
+      const stable=releases.filter(rel=>!rel.prerelease && rel.tag_name).sort((x,y)=>(Date.parse(y.published_at)||0)-(Date.parse(x.published_at)||0))[0];
+      const history=releases.slice().sort((x,y)=>(Date.parse(y.published_at)||0)-(Date.parse(x.published_at)||0));
+      list.replaceChildren(); releaseStatus.remove();
+      if(stable){
+        const assets=(stable.assets||[]).filter(a=>WINDOWS_ASSET.test(a.name||''));
+        const primary=assets[0], url=primary?safeLink(primary.browser_download_url):safeLink(stable.html_url);
+        heroBtn.href=url; mainBtn.href=url; headerTag.textContent=stable.tag_name;
+        dlBoxTag.textContent=`${stable.tag_name} · Latest stable Windows release`;
+        heroLabel.textContent=`Download ${stable.tag_name}`;
+        mainLabel.textContent=primary?`Download ${primary.name}`:`View ${stable.tag_name} release`;
+        assets.slice(1).forEach(asset=>assetLink(document.querySelector('.dlrow'),asset));
+      } else {
+        dlBoxTag.textContent='No stable Windows release is available yet.';
+        heroBtn.href=RELEASES_URL; mainBtn.href=RELEASES_URL;
+        heroLabel.textContent='View Releases'; mainLabel.textContent='View GitHub Releases';
       }
-    } catch (e) {
-      const fallbackUrl = `https://github.com/${REPO}/releases`;
-      heroBtn.href = fallbackUrl;
-      mainBtn.href = fallbackUrl;
-      dlBoxTag.textContent = 'GitHub Releases';
-      heroLabel.textContent = 'Download APK';
-      mainLabel.textContent = 'GitHub Releases';
-      oldBuildsList.innerHTML = `
-        <div class="build-item">
-          <div class="build-tag">View Releases on GitHub</div>
-          <a href="${fallbackUrl}" target="_blank" class="btn btn-w btn-build-dl">
-            <span class="ms">open_in_new</span>
-            <span>Releases</span>
-          </a>
-        </div>`;
+      if(!history.length){textNode(list,'div','release-status','No releases are available yet.');return;}
+      history.forEach(rel=>{
+        const card=document.createElement('article'); card.className='release-card';
+        const heading=document.createElement('div'); heading.className='release-heading'; card.appendChild(heading);
+        const info=document.createElement('div'); heading.appendChild(info);
+        textNode(info,'div','release-title',rel.name||rel.tag_name||'Untitled release');
+        textNode(info,'div','build-date',`${rel.tag_name||'Version unavailable'}${rel.prerelease?' · Prerelease':''}`);
+        const date=rel.published_at&&!Number.isNaN(Date.parse(rel.published_at))?new Date(rel.published_at).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}):'Published date unavailable';
+        textNode(info,'div','build-date',date);
+        const github=document.createElement('a'); github.href=safeLink(rel.html_url); github.target='_blank'; github.rel='noopener noreferrer'; github.textContent='GitHub release'; heading.appendChild(github);
+        const assets=(rel.assets||[]).filter(asset=>WINDOWS_ASSET.test(asset.name||''));
+        if(assets.length){const box=document.createElement('div');box.className='release-assets';assets.forEach(asset=>assetLink(box,asset));card.appendChild(box);}else textNode(card,'div','build-date','No Windows installer assets attached.');
+        if(rel.body){const notes=document.createElement('details');notes.className='release-more';textNode(notes,'summary','','Release notes');textNode(notes,'div','release-notes',rel.body);card.appendChild(notes);}else textNode(card,'div','build-date','No release notes provided.');
+        list.appendChild(card);
+      });
+    } catch(error) {
+      dlBoxTag.textContent='Unable to load the latest release.'; heroBtn.href=RELEASES_URL; mainBtn.href=RELEASES_URL;
+      heroLabel.textContent='View GitHub Releases'; mainLabel.textContent='View GitHub Releases';
+      if(releaseStatus.isConnected)releaseError(error.message||'Unable to load releases.');
     }
   }
-
+  fetchReleases();
   /* Old Builds Accordion Toggle */
   const toggleBtn = document.getElementById('oldBuildsToggle');
   const buildsContainer = document.getElementById('oldBuildsContainer');
