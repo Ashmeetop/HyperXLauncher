@@ -558,10 +558,7 @@
 <script>
   /* Private Windows releases are fetched through the server-side Vercel function. */
   const WINDOWS_ASSET = /\.(exe|msi|zip|7z)$/i;
-<<<<<<< HEAD
-=======
   const WINDOWS_FALLBACK_URL = 'https://release-assets.githubusercontent.com/github-production-release-asset/1233179191/6f8c92e9-8f45-4e4a-822a-066e4dc0544e?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-10-25T08%3A53%3A30Z&rscd=attachment%3B+filename%3DHyperLauncher_Setup_v1.0.5.exe&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-10-25T07%3A53%3A28Z&ske=2026-10-25T08%3A53%3A30Z&sks=b&skv=2018-11-09&sig=dsrdTWGPdk16xLVTkiDdIM0gI%2BT5wTLbZPwkYlLayCA%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MjkxNzUxNCwibmJmIjoxNzkyOTE1NzE0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.u2FyDsP3v1aBjeDtu4OsMkda03jrlpZuY93Y1Q-iHwM&response-content-disposition=attachment%3B%20filename%3DHyperLauncher_Setup_v1.0.5.exe&response-content-type=application%2Foctet-stream';
->>>>>>> 0d59208 (add fallback)
   const windowsVersion = document.getElementById('windowsVersion');
   const windowsDownloads = document.getElementById('windowsDownloads');
   const windowsStatus = document.getElementById('windowsStatus');
@@ -581,15 +578,9 @@
     const node=document.createElement(tag); if(className) node.className=className;
     node.textContent=value; parent.appendChild(node); return node;
   }
-<<<<<<< HEAD
-  function makeDownloadButton(parent, asset, primary=false) {
-    const link=document.createElement('a');
-    link.href=safeDownloadUrl(asset); link.className=`windows-download ${primary?'btn btn-w':'btn btn-g'}`;
-=======
   function makeDownloadButton(parent, asset, primary=false, url=safeDownloadUrl(asset)) {
     const link=document.createElement('a');
     link.href=url; link.className=`windows-download ${primary?'btn btn-w':'btn btn-g'}`;
->>>>>>> 0d59208 (add fallback)
     appendText(link,'span','',primary?'Download for Windows':`Download ${asset.name}`);
     if(!primary) appendText(link,'span','windows-download-name',`${asset.name}${formatFileSize(asset.size)?` · ${formatFileSize(asset.size)}`:''}`);
     link.setAttribute('aria-label',`${primary?'Download for Windows':'Download'} ${asset.name}${formatFileSize(asset.size)?`, ${formatFileSize(asset.size)}`:''}`);
@@ -620,8 +611,10 @@
     windowsStatus.hidden=false; windowsStatus.textContent='Fetching releases...'; windowsDownloads.replaceChildren();
     const heroButton=document.getElementById('heroDlBtn');
     heroButton.href='#windows'; heroButton.removeAttribute('aria-disabled');
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),10000);
     try {
-      const response=await fetch('/api/releases',{cache:'no-store'});
+      const response=await fetch('/api/releases',{cache:'no-store',signal:controller.signal});
       if(!response.ok){const error=await response.json().catch(()=>({}));throw new Error(error.error||'Could not load Windows releases.');}
       const releases=await response.json();
       if(!Array.isArray(releases))throw new Error('Unexpected response from releases service.');
@@ -649,17 +642,15 @@
       else history.forEach(release=>renderRelease(release,windowsHistoryList));
       windowsStatus.hidden=true;
     } catch(error) {
-<<<<<<< HEAD
-      heroButton.setAttribute('aria-disabled','true');
-=======
       windowsDownloads.replaceChildren();
       windowsVersion.textContent='v1.0.5 · Fallback Windows installer';
       makeDownloadButton(windowsDownloads,{name:'HyperLauncher_Setup_v1.0.5.exe'},true,WINDOWS_FALLBACK_URL);
       heroButton.href=WINDOWS_FALLBACK_URL;
       heroButton.removeAttribute('aria-disabled');
       heroButton.setAttribute('aria-label','Download Windows v1.0.5: HyperLauncher_Setup_v1.0.5.exe');
->>>>>>> 0d59208 (add fallback)
-      showWindowsError(error.message||'Unable to load Windows releases.');
+      showWindowsError(error.name==='AbortError'?'Windows release request timed out. Use the fallback download or retry.':error.message||'Unable to load Windows releases.');
+    } finally {
+      clearTimeout(timeout);
     }
   }
   fetchWindowsReleases();
@@ -702,7 +693,7 @@
   }, { passive: true });
 
   /* Reveal */
-  document.documentElement.classList.add('js-ready');
+  if ('IntersectionObserver' in window) {
   const io = new IntersectionObserver(es => {
     es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); } });
   }, { threshold: 0.1 });
@@ -710,6 +701,8 @@
     el.style.transitionDelay = (i % 5) * 0.055 + 's';
     io.observe(el);
   });
+  document.documentElement.classList.add('js-ready');
+  }
 
   /* Ripple + feedback + haptics for main CTA buttons */
   document.querySelectorAll('.btn').forEach(btn => {
@@ -781,6 +774,7 @@
     });
   });
 
+  if ('IntersectionObserver' in window) {
   const spy = new IntersectionObserver((entries) => {
     if (userClicked) return;
     entries.forEach(entry => {
@@ -792,10 +786,9 @@
   }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
 
   sections.forEach(sec => { if (sec) spy.observe(sec); });
+  }
 
-  window.addEventListener('load', () => {
-    setActive(navLinks[0]);
-  });
+  setActive(navLinks[0]);
   window.addEventListener('resize', () => {
     const active = navEl.querySelector('a.active') || navLinks[0];
     moveIndicator(active, false);
