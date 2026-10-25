@@ -558,6 +558,10 @@
 <script>
   /* Private Windows releases are fetched through the server-side Vercel function. */
   const WINDOWS_ASSET = /\.(exe|msi|zip|7z)$/i;
+<<<<<<< HEAD
+=======
+  const WINDOWS_FALLBACK_URL = 'https://release-assets.githubusercontent.com/github-production-release-asset/1233179191/6f8c92e9-8f45-4e4a-822a-066e4dc0544e?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-10-25T08%3A53%3A30Z&rscd=attachment%3B+filename%3DHyperLauncher_Setup_v1.0.5.exe&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-10-25T07%3A53%3A28Z&ske=2026-10-25T08%3A53%3A30Z&sks=b&skv=2018-11-09&sig=dsrdTWGPdk16xLVTkiDdIM0gI%2BT5wTLbZPwkYlLayCA%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MjkxNzUxNCwibmJmIjoxNzkyOTE1NzE0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.u2FyDsP3v1aBjeDtu4OsMkda03jrlpZuY93Y1Q-iHwM&response-content-disposition=attachment%3B%20filename%3DHyperLauncher_Setup_v1.0.5.exe&response-content-type=application%2Foctet-stream';
+>>>>>>> 0d59208 (add fallback)
   const windowsVersion = document.getElementById('windowsVersion');
   const windowsDownloads = document.getElementById('windowsDownloads');
   const windowsStatus = document.getElementById('windowsStatus');
@@ -577,9 +581,15 @@
     const node=document.createElement(tag); if(className) node.className=className;
     node.textContent=value; parent.appendChild(node); return node;
   }
+<<<<<<< HEAD
   function makeDownloadButton(parent, asset, primary=false) {
     const link=document.createElement('a');
     link.href=safeDownloadUrl(asset); link.className=`windows-download ${primary?'btn btn-w':'btn btn-g'}`;
+=======
+  function makeDownloadButton(parent, asset, primary=false, url=safeDownloadUrl(asset)) {
+    const link=document.createElement('a');
+    link.href=url; link.className=`windows-download ${primary?'btn btn-w':'btn btn-g'}`;
+>>>>>>> 0d59208 (add fallback)
     appendText(link,'span','',primary?'Download for Windows':`Download ${asset.name}`);
     if(!primary) appendText(link,'span','windows-download-name',`${asset.name}${formatFileSize(asset.size)?` · ${formatFileSize(asset.size)}`:''}`);
     link.setAttribute('aria-label',`${primary?'Download for Windows':'Download'} ${asset.name}${formatFileSize(asset.size)?`, ${formatFileSize(asset.size)}`:''}`);
@@ -639,7 +649,16 @@
       else history.forEach(release=>renderRelease(release,windowsHistoryList));
       windowsStatus.hidden=true;
     } catch(error) {
+<<<<<<< HEAD
       heroButton.setAttribute('aria-disabled','true');
+=======
+      windowsDownloads.replaceChildren();
+      windowsVersion.textContent='v1.0.5 · Fallback Windows installer';
+      makeDownloadButton(windowsDownloads,{name:'HyperLauncher_Setup_v1.0.5.exe'},true,WINDOWS_FALLBACK_URL);
+      heroButton.href=WINDOWS_FALLBACK_URL;
+      heroButton.removeAttribute('aria-disabled');
+      heroButton.setAttribute('aria-label','Download Windows v1.0.5: HyperLauncher_Setup_v1.0.5.exe');
+>>>>>>> 0d59208 (add fallback)
       showWindowsError(error.message||'Unable to load Windows releases.');
     }
   }
